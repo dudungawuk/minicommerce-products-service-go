@@ -1,0 +1,14 @@
+# Binaries
+bin/
+*.exe
+*.test
+*.prof
+
+# Environment variables
+.env
+
+# Dependencies
+vendor/
+
+# OS files
+.DS_Store
