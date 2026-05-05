@@ -27,6 +27,8 @@ func NewProductRepository(db *mongo.Database) ProductRepository {
 func (r *productRepository) FindAll(ctx context.Context) ([]model.Product, error) {
 	var products []model.Product
 
+	fmt.Println(r.collection.Find(context.TODO(), bson.M{}))
+
 	cursor, err := r.collection.Find(ctx, bson.M{})
 
 	if err != nil {
@@ -37,6 +39,8 @@ func (r *productRepository) FindAll(ctx context.Context) ([]model.Product, error
 	if err := cursor.All(ctx, &products); err != nil {
 		return nil, err
 	}
+
+	fmt.Println("DEBUG REPOSITORY: ", err)
 
 	return products, nil
 

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"product-service/internal/product/dto"
 	"product-service/internal/product/service"
@@ -26,7 +25,6 @@ func NewProductHandler(s service.ProductService) ProductHandler {
 
 func (h *productHandler) GetAllProducts(c *gin.Context) {
 	ctx := c.Request.Context()
-	fmt.Print(ctx)
 	var products, err = h.s.GetAllProducts(ctx)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
