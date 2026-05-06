@@ -36,6 +36,7 @@ func (h *productHandler) GetAllProducts(c *gin.Context) {
 func (h *productHandler) AddProducts(c *gin.Context) {
 	var req dto.CreateProductRequest
 	ctx := c.Request.Context()
+	username := c.MustGet("username").(string)
 
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, dto.WebResponse{
@@ -47,7 +48,7 @@ func (h *productHandler) AddProducts(c *gin.Context) {
 		return
 	}
 
-	err := h.s.AddProducts(ctx, req)
+	err := h.s.AddProducts(ctx, username, req)
 	if err != nil {
 		resp := dto.WebResponse{
 			Code:    500,

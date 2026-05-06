@@ -5,11 +5,12 @@ import (
 	"product-service/internal/product/dto"
 	"product-service/internal/product/model"
 	"product-service/internal/product/repository"
+	"time"
 )
 
 type ProductService interface {
 	GetAllProducts(ctx context.Context) ([]model.Product, error)
-	AddProducts(ctx context.Context, product dto.CreateProductRequest) error
+	AddProducts(ctx context.Context, username string, product dto.CreateProductRequest) error
 }
 
 type productService struct {
@@ -22,13 +23,15 @@ func NewProductService(r repository.ProductRepository) ProductService {
 	}
 }
 
-func (s *productService) AddProducts(ctx context.Context, product dto.CreateProductRequest) error {
+func (s *productService) AddProducts(ctx context.Context, username string, product dto.CreateProductRequest) error {
 
 	p := model.Product{
-		Name:     product.Name,
-		Price:    product.Price,
-		Stock:    product.Stock,
-		Category: product.Category,
+		Name:      product.Name,
+		Price:     product.Price,
+		Stock:     product.Stock,
+		Category:  product.Category,
+		CreatedAt: time.Now(),
+		CreatedBy: username,
 	}
 
 	return s.r.Insert(ctx, p)
