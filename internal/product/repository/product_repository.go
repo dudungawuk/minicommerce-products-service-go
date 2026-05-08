@@ -12,13 +12,15 @@ import (
 type ProductRepository interface {
 	Insert(ctx context.Context, product model.Product) error
 	FindAll(ctx context.Context) ([]model.Product, error)
+	GetByID(ctx context.Context, id bson.ObjectID) (model.Product, error)
+	// UserTransaction(ctx context.Context) ()
 }
 
 type productRepository struct {
 	collection *mongo.Collection
 }
 
-func NewProductRepository(db *mongo.Database) ProductRepository {
+func NewProductRepository(db *mongo.Database, id bson.ObjectID) ProductRepository {
 	return &productRepository{
 		collection: db.Collection("products"),
 	}
@@ -26,8 +28,6 @@ func NewProductRepository(db *mongo.Database) ProductRepository {
 
 func (r *productRepository) FindAll(ctx context.Context) ([]model.Product, error) {
 	var products []model.Product
-
-	fmt.Println(r.collection.Find(context.TODO(), bson.M{}))
 
 	cursor, err := r.collection.Find(ctx, bson.M{})
 
@@ -44,6 +44,20 @@ func (r *productRepository) FindAll(ctx context.Context) ([]model.Product, error
 
 	return products, nil
 
+}
+
+func (r *productRepository) GetByID(ctx context.Context, id bson.ObjectID) (model.Product, error) {
+	var product model.Product
+
+	// 1. Gunakan filter { "_id": id }
+	// 2. Gunakan .Decode() untuk memasukkan data ke variabel product
+	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&product)
+
+	if err != nil {
+		return model.Product{}, err
+	}
+
+	return product, nil
 }
 
 func (r *productRepository) Insert(ctx context.Context, product model.Product) error {
